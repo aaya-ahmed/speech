@@ -113,7 +113,7 @@ export class AppComponent implements OnInit {
         this.isListening = false;
         this.end = 'end';
         this.recognition.stop();
-        this.stopVisualizer();
+       // this.stopVisualizer();
 
         this.cdr.detectChanges();
       };
@@ -142,13 +142,13 @@ export class AppComponent implements OnInit {
   toggleSpeechRecognition(event: any): void {
     if (this.isListening) {
       this.recognition.stop();
-      this.stopVisualizer();
+    //  this.stopVisualizer();
       this.isListening = false;
       this.cdr.detectChanges();
     } else {this.end=''
       this.recognition.start();
       this.isListening = true;
-      this.startVisualizer();
+  //   this.startVisualizer();
     }
   }
   startVisualizer(): void {
