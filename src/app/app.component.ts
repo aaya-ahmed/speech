@@ -9,9 +9,9 @@ import { Subject } from 'rxjs';
   imports: [RouterOutlet],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
-  changeDetection:ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
   //solution 1
   //   transcript = '';
 
@@ -30,47 +30,45 @@ export class AppComponent implements OnInit{
   // }
 
 
-    //solution 2
-//   constructor(private speechService: SpeechRecognitionService) {}
+  //solution 2
+  //   constructor(private speechService: SpeechRecognitionService) {}
 
-// start() {
-//   this.speechService.startListening(
-//     (transcript) => {
-//       console.log('Heard:', transcript);
-//     },
-//     (error) => {
-//       console.error('Speech error:', error);
-//     },
-//     () => {
-//       console.log('Listening started');
-//     },
-//     () => {
-//       console.log('Listening stopped');
-//     }
-//   );
-// }
+  // start() {
+  //   this.speechService.startListening(
+  //     (transcript) => {
+  //       console.log('Heard:', transcript);
+  //     },
+  //     (error) => {
+  //       console.error('Speech error:', error);
+  //     },
+  //     () => {
+  //       console.log('Listening started');
+  //     },
+  //     () => {
+  //       console.log('Listening stopped');
+  //     }
+  //   );
+  // }
 
-// stop() {
-//   this.speechService.stopListening();
-// }
+  // stop() {
+  //   this.speechService.stopListening();
+  // }
 
   isListening: boolean = false;
   recognition: any;
   hideMobileIcon: boolean = false;
-  @ViewChild('inputText') inputText!: ElementRef<HTMLInputElement>;
   // canvas wave form
-  @ViewChild('waveformCanvas') waveformCanvas!: ElementRef<HTMLCanvasElement>;
   audioContext!: AudioContext;
   analyser!: AnalyserNode;
   dataArray!: Uint8Array;
   source!: MediaStreamAudioSourceNode;
   animationId: number = 0;
-
+  private mediaStream?: MediaStream;
   constructor(
 
     private cdr: ChangeDetectorRef,
   ) {
-  
+
   }
   ngOnInit(): void {
     this.initSpeechRecognition();
@@ -85,15 +83,15 @@ export class AppComponent implements OnInit{
       this.recognition = new SpeechRecognition();
       this.recognition.continuous = false;
       this.recognition.interimResults = false;
-      this.recognition.lang =  'ar-SA';
+      this.recognition.lang = 'en-US';
 
-      this.recognition.maxAlternatives = 1;
+      this.recognition.maxAlternatives = 5;
 
       this.recognition.onresult = (event: any) => {
         const results = event.results[0];
         if (results.isFinal) {
           const transcript = results[0].transcript.trim();
-          console.log("recording",transcript)
+          console.log("recording", transcript)
           if (transcript) {
 
           } else {
@@ -104,6 +102,9 @@ export class AppComponent implements OnInit{
 
       this.recognition.onend = () => {
         this.isListening = false;
+      this.recognition.stop();
+      this.stopVisualizer();
+
         this.cdr.detectChanges();
       };
 
@@ -128,7 +129,6 @@ export class AppComponent implements OnInit{
   }
 
   toggleSpeechRecognition(event: any): void {
-    console.log(this.isListening)
     if (this.isListening) {
       this.recognition.stop();
       this.stopVisualizer();
@@ -144,7 +144,8 @@ export class AppComponent implements OnInit{
     navigator.mediaDevices
       .getUserMedia({ audio: true })
       .then((stream) => {
-
+        this.mediaStream = stream; // Save the stream for later stopping
+        this.audioContext = new AudioContext();
       })
       .catch((err) => {
         console.error('Microphone access denied', err);
@@ -154,6 +155,11 @@ export class AppComponent implements OnInit{
   stopVisualizer(): void {
     if (this.animationId) cancelAnimationFrame(this.animationId);
     if (this.audioContext) this.audioContext.close();
+    // 🚨 This is the crucial part
+    if (this.mediaStream) {
+      this.mediaStream.getTracks().forEach((track) => track.stop());
+      this.mediaStream = undefined;
+    }
   }
 
 }
