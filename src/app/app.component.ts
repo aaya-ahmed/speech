@@ -63,7 +63,7 @@ export class AppComponent implements OnInit {
   dataArray!: Uint8Array;
   source!: MediaStreamAudioSourceNode;
   animationId: number = 0;
-  word=''
+  word='hello'
   private mediaStream?: MediaStream;
   constructor(
 
