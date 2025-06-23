@@ -63,7 +63,8 @@ export class AppComponent implements OnInit {
   dataArray!: Uint8Array;
   source!: MediaStreamAudioSourceNode;
   animationId: number = 0;
-  word='hello'
+  word = 'hello'
+  end=''
   private mediaStream?: MediaStream;
   constructor(
 
@@ -94,10 +95,10 @@ export class AppComponent implements OnInit {
           const transcript = results[0].transcript.trim();
           console.log("recording", transcript)
           if (transcript) {
-this.word=transcript;
+            this.word = transcript;
             this.cdr.detectChanges()
           } else {
-            this.word='un';
+            this.word = 'un';
             this.cdr.detectChanges()
             this.retrySpeechRecognition();
           }
@@ -106,8 +107,9 @@ this.word=transcript;
 
       this.recognition.onend = () => {
         this.isListening = false;
-      this.recognition.stop();
-      this.stopVisualizer();
+        this.end = 'end';
+        this.recognition.stop();
+        this.stopVisualizer();
 
         this.cdr.detectChanges();
       };
@@ -115,7 +117,7 @@ this.word=transcript;
       this.recognition.onerror = (event: any) => {
         console.error('Speech recognition error:', event.error);
         this.isListening = false;
-        this.word='error';
+        this.word = 'error';
         this.cdr.detectChanges();
       };
     } else {
@@ -139,7 +141,7 @@ this.word=transcript;
       this.stopVisualizer();
       this.isListening = false;
       this.cdr.detectChanges();
-    } else {
+    } else {this.end=''
       this.recognition.start();
       this.isListening = true;
       this.startVisualizer();
