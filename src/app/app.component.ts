@@ -65,6 +65,8 @@ export class AppComponent implements OnInit {
   animationId: number = 0;
   word = 'hello'
   end=''
+  onresult='';
+  result=''
   private mediaStream?: MediaStream;
   constructor(
 
@@ -91,6 +93,8 @@ export class AppComponent implements OnInit {
 
       this.recognition.onresult = (event: any) => {
         const results = event.results[0];
+        this.result=results[0].transcript.trim()
+        this.onresult='result'
         if (results.isFinal) {
           const transcript = results[0].transcript.trim();
           console.log("recording", transcript)
