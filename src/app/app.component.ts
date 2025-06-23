@@ -91,10 +91,10 @@ export class AppComponent implements OnInit {
 
       this.recognition.maxAlternatives = 5;
 
-      this.recognition.onresult = (event: any) => {
+      this.recognition.onresult =function (event: any) {
+        this.onresult='result'
         const results = event.results[0];
         this.result=results[0].transcript.trim()
-        this.onresult='result'
         if (results.isFinal) {
           const transcript = results[0].transcript.trim();
           console.log("recording", transcript)
