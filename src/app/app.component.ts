@@ -63,6 +63,7 @@ export class AppComponent implements OnInit {
   dataArray!: Uint8Array;
   source!: MediaStreamAudioSourceNode;
   animationId: number = 0;
+  word:string=''
   private mediaStream?: MediaStream;
   constructor(
 
@@ -93,8 +94,9 @@ export class AppComponent implements OnInit {
           const transcript = results[0].transcript.trim();
           console.log("recording", transcript)
           if (transcript) {
-
+this.word=transcript
           } else {
+            this.word='un'
             this.retrySpeechRecognition();
           }
         }
@@ -111,6 +113,7 @@ export class AppComponent implements OnInit {
       this.recognition.onerror = (event: any) => {
         console.error('Speech recognition error:', event.error);
         this.isListening = false;
+        this.word='error'+ JSON.stringify(event.error)
         this.cdr.detectChanges();
       };
     } else {
