@@ -95,8 +95,10 @@ export class AppComponent implements OnInit {
           console.log("recording", transcript)
           if (transcript) {
 this.word=transcript;
+            this.cdr.detectChanges()
           } else {
             this.word='un';
+            this.cdr.detectChanges()
             this.retrySpeechRecognition();
           }
         }
