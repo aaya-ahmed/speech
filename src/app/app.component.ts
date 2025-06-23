@@ -54,12 +54,6 @@ export class AppComponent implements OnInit{
 //   this.speechService.stopListening();
 // }
 
-  lang: any = 'en';
-  searchKeywords: string = '';
-  products: any = [];
-  hideSearch: boolean = true;
-  recentSearch: any = [];
-  popularSearch: any = [];
   isListening: boolean = false;
   recognition: any;
   hideMobileIcon: boolean = false;
@@ -71,9 +65,6 @@ export class AppComponent implements OnInit{
   dataArray!: Uint8Array;
   source!: MediaStreamAudioSourceNode;
   animationId: number = 0;
-  isRedirected: boolean = false;
-  userLoggedIn: boolean = false;
-  searchSubject = new Subject<string>();
 
   constructor(
 
@@ -94,7 +85,7 @@ export class AppComponent implements OnInit{
       this.recognition = new SpeechRecognition();
       this.recognition.continuous = false;
       this.recognition.interimResults = false;
-      this.recognition.lang = this.lang === 'en' ? 'ar-SA' : 'ar-SA';
+      this.recognition.lang =  'ar-SA';
 
       this.recognition.maxAlternatives = 1;
 
@@ -104,9 +95,7 @@ export class AppComponent implements OnInit{
           const transcript = results[0].transcript.trim();
           console.log("recording",transcript)
           if (transcript) {
-            this.searchKeywords = transcript;
-            // window.location.reload()
-            // this.onSubmit(this.searchKeywords);
+
           } else {
             this.retrySpeechRecognition();
           }
@@ -155,16 +144,6 @@ export class AppComponent implements OnInit{
     navigator.mediaDevices
       .getUserMedia({ audio: true })
       .then((stream) => {
-        this.audioContext = new (window.AudioContext ||
-          (window as any).webkitAudioContext)();
-        this.analyser = this.audioContext.createAnalyser();
-        this.analyser.fftSize = 64; // ~32 bars
-
-        const bufferLength = this.analyser.frequencyBinCount; // 32
-        this.dataArray = new Uint8Array(bufferLength);
-
-        this.source = this.audioContext.createMediaStreamSource(stream);
-        this.source.connect(this.analyser);
 
       })
       .catch((err) => {
